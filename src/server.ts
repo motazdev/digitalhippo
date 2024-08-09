@@ -11,6 +11,7 @@ import nextBuild from "next/dist/build";
 import path from "path";
 import { PayloadRequest } from "payload/types";
 import { parse } from "url";
+import cookieParser from "cookie-parser";
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 const createContext = ({
@@ -28,6 +29,7 @@ const start = async () => {
       req.rawBody = buffer;
     },
   });
+  app.use(cookieParser());
 
   app.post("/api/webhooks/stripe", webhookMiddleware, stripeWebhookHandler);
   const payload = await getPayloadClient({
