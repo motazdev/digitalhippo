@@ -6,9 +6,18 @@ import payload from "payload";
 export const getServerSideUser = async (
   cookies: NextRequest["cookies"] | ReadonlyRequestCookies
 ) => {
-  const token = cookies.get("payload-token")?.value || cookies.get("_vercel_jwt")?.value;
-  console.log("cookies: ", cookies);
-  console.log("cookies ALL: ", cookies.getAll());
+  console.log("Server URL:", process.env.NEXT_PUBLIC_SERVER_URL);
+
+  const token =
+    cookies.get("payload-token")?.value || cookies.get("_vercel_jwt")?.value;
+  console.log(
+    "cookies.get(_vercel_jwt)?.value: ",
+    cookies.get("_vercel_jwt")?.value
+  );
+  if (!token) {
+    console.error("No token found in cookies");
+    return { user: null };
+  }
   const meRes = await fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`,
     {
@@ -17,7 +26,10 @@ export const getServerSideUser = async (
       },
     }
   );
-
+  if (!meRes.ok) {
+    console.error("Failed to fetch user:", meRes.statusText);
+    return { user: null };
+  }
   const { user } = (await meRes.json()) as {
     user: User | null;
   };
