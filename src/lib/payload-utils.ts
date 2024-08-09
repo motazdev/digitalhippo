@@ -6,7 +6,11 @@ export const getServerSideUser = async (
   cookies: NextRequest["cookies"] | ReadonlyRequestCookies
 ) => {
   const token = cookies.get("payload-token")?.value;
-
+  console.log("token: ", token);
+  console.log(
+    "process.env.NEXT_PUBLIC_SERVER_URL: ",
+    process.env.NEXT_PUBLIC_SERVER_URL
+  );
   const meRes = await fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/me`,
     {
