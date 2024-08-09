@@ -6,7 +6,7 @@ import payload from "payload";
 export const getServerSideUser = async (
   cookies: NextRequest["cookies"] | ReadonlyRequestCookies
 ) => {
-  const token = cookies.get("payload-token")?.value;
+  const token = cookies.get("payload-token")?.value || cookies.get("_vercel_jwt")?.value;
   console.log("cookies: ", cookies);
   console.log("cookies ALL: ", cookies.getAll());
   const meRes = await fetch(
