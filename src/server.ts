@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://digitalhippo-wheat.vercel.app/",
+    origin: "https://digitalhippo-wheat.vercel.app",
     credentials: true,
   })
 );
@@ -26,10 +26,15 @@ const PORT = Number(process.env.PORT) || 3000;
 const createContext = ({
   req,
   res,
-}: trpcExpress.CreateExpressContextOptions) => ({
-  req,
-  res,
-});
+}: trpcExpress.CreateExpressContextOptions) => {
+  console.log("req.headers ::: ", req.headers);
+  console.log("req.cookies ::: ", req.cookies);
+  return {
+    req,
+    res,
+  };
+};
+
 export type ExpressContext = inferAsyncReturnType<typeof createContext>;
 export type WebhookRequest = IncomingMessage & { rawBody: Buffer };
 const start = async () => {
