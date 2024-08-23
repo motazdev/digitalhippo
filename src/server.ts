@@ -12,8 +12,16 @@ import path from "path";
 import { PayloadRequest } from "payload/types";
 import { parse } from "url";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 const app = express();
 app.use(cookieParser());
+app.use(express.json());
+app.use(
+  cors({
+    origin: "https://digitalhippo-wheat.vercel.app/",
+    credentials: true,
+  })
+);
 const PORT = Number(process.env.PORT) || 3000;
 const createContext = ({
   req,
@@ -84,3 +92,5 @@ const start = async () => {
 };
 
 start();
+
+export default app;
