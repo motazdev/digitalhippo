@@ -14,6 +14,8 @@ export const getServerSideUser = async (
     "cookies.get(_vercel_jwt)?.value: ",
     cookies.get("_vercel_jwt")?.value
   );
+    console.log("cookies: ", cookies);
+  console.log("cookies ALL: ", cookies.getAll());
   if (!token) {
     console.error("No token found in cookies");
     return { user: null };
