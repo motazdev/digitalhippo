@@ -3,14 +3,13 @@
   "builds": [
     {
       "src": "src/server.ts",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "next.config.js",
-      "use": "@vercel/next"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["src/**/*.ts"]
+      }
     }
   ],
- "routes": [
+  "routes": [
     {
       "src": "/api/trpc/(.*)",
       "dest": "/api/trpc/$1"
