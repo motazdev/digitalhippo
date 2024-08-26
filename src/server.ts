@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://digitalhippo-wheat.vercel.app",
+    origin: "https://digitalhippo-kohl-nine.vercel.app",
     credentials: true,
   })
 );
