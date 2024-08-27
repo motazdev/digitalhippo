@@ -10,10 +10,10 @@
       "use": "@vercel/next"
     }
   ],
-"routes": [
+  "routes": [
     {
-      "src": "/api/trpc/(.*)",
-      "dest": "/api/trpc/$1"
+      "src": "/api/(.*)",
+      "dest": "/src/server.ts"
     },
     {
       "src": "/(.*)",
