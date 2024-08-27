@@ -45,6 +45,7 @@ const start = async () => {
   });
 
   app.post("/api/webhooks/stripe", webhookMiddleware, stripeWebhookHandler);
+  const initializeServer = async () => {
   const payload = await getPayloadClient({
     initOptions: {
       express: app,
@@ -55,30 +56,15 @@ const start = async () => {
   });
 
   const cartRouter = express.Router();
-
   cartRouter.use(payload.authenticate);
   cartRouter.get("/", (req, res) => {
     const request = req as PayloadRequest;
     if (!request.user) return res.redirect("/sign-in?origin=cart");
     const parsedUrl = parse(req.url, true);
-
     return nextApp.render(req, res, "/cart", parsedUrl.query);
   });
 
   app.use("/cart", cartRouter);
-
-  if (process.env.NEXT_BUILD) {
-    app.listen(PORT, async () => {
-      payload.logger.info("Next.js is building for production");
-
-      // @ts-expect-error
-      await nextBuild(path.join(__dirname, "../"));
-
-      process.exit();
-    });
-
-    return;
-  }
 
   app.use(
     "/api/trpc",
@@ -87,15 +73,15 @@ const start = async () => {
       createContext,
     })
   );
-  app.use((req, res) => nextHandler(req, res));
-  nextApp.prepare().then(() => {
-    payload.logger.info("Nextjs started");
-    app.listen(PORT, async () => {
-      payload.logger.info(`Nextjs App URL: ${process.env.NEXT_PUBLIC_URL}`);
-    });
-  });
+
+  app.all("*", (req, res) => nextHandler(req, res));
+
+  await nextApp.prepare();
+  return app;
 };
 
-start();
-
-export default app;
+// Export the serverless handler for Vercel
+export default async (req: any, res: any) => {
+  const app = await initializeServer();
+  return app(req, res);
+};
