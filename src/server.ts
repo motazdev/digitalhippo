@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://digitalhippo-kohl-nine.vercel.app",
+    origin: "https://digitalhippo-wheat.vercel.app",
     credentials: true,
   })
 );
@@ -27,8 +27,6 @@ const createContext = ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
-  console.log("req.headers ::: ", req.headers);
-  console.log("req.cookies ::: ", req.cookies);
   return {
     req,
     res,
@@ -37,15 +35,15 @@ const createContext = ({
 
 export type ExpressContext = inferAsyncReturnType<typeof createContext>;
 export type WebhookRequest = IncomingMessage & { rawBody: Buffer };
-const start = async () => {
-  const webhookMiddleware = bodyParser.json({
-    verify: (req: WebhookRequest, _, buffer) => {
-      req.rawBody = buffer;
-    },
-  });
 
-  app.post("/api/webhooks/stripe", webhookMiddleware, stripeWebhookHandler);
-  const initializeServer = async () => {
+const webhookMiddleware = bodyParser.json({
+  verify: (req: WebhookRequest, _, buffer) => {
+    req.rawBody = buffer;
+  },
+});
+
+app.post("/api/webhooks/stripe", webhookMiddleware, stripeWebhookHandler);
+const initializeServer = async () => {
   const payload = await getPayloadClient({
     initOptions: {
       express: app,
